@@ -1,0 +1,18 @@
+{
+	"name": "davidbehler/timer",
+	"description": "A timer, in PHP. You can (re)start, pause and stop. And get the passed time.",
+	"keywords": ["time", "timer"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "David Behler",
+			"email": "d.behler@gmail.com",
+			"role": "Developer"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"DavidBehler\\Timer\\": "src/DavidBehler/Timer"
+		}
+	}
+}
