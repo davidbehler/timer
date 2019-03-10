@@ -144,6 +144,11 @@ $timer->stop();
 $timer->getDuration(true); // returns 1.7 (in a perfect world, but of course timings aren't this perfect)
 ```
 
+Get a report
+``` php
+$timer->getReport();
+```
+
 ## TimerCollection Usage
 Create a new TimerCollection with the microtime option. All timers within this collection will use the measuring option the collection was inititialized with.
 ``` php
@@ -182,4 +187,14 @@ You can get a list of all timers
 ``` php
 $timerCollection->getTimers(); // returns an array with all setup timers
 $timerCollection->getTimers(true); // returns an array with all the setup timers' labels
+```
+
+Get a single timer's report
+``` php
+$timerCollection->getReport('timer 4');
+```
+
+Get a report for multiple timers
+``` php
+$timerCollection->getReport(array('timer 5', 'timer 6'));
 ```
