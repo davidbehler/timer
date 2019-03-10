@@ -1,5 +1,5 @@
 # timer
-A timer, in PHP. You can (re)start, pause and stop. And get the passed time.
+A timer, in PHP. You can (re)start, pause and stop. And get the passed time. With TimerCollection you can run multiple timers at once.
 
 Currently supported time measuring options:
 
@@ -8,16 +8,22 @@ Currently supported time measuring options:
 
 ## Installation
 
-Using Composer:
+Using Composer
 
 ```bash
 composer require davidbehler/timer
 ```
 
-## Usage
+Without Composer
+
+You can also download it from [Github] (https://github.com/davidbehler/timer), but no autoloader is provided so you'll need to register it with your own PSR-4 compatible autoloader.
+
+## Timer Usage
 
 Create a new timer with autostart
 ``` php
+use DavidBehler\Timer\Timer;
+
 $timer = new Timer;
 ```
 
@@ -136,4 +142,44 @@ usleep(1000);
 $timer->stop();
 
 $timer->getDuration(true); // returns 1.7 (in a perfect world, but of course timings aren't this perfect)
+```
+
+## TimerCollection Usage
+Create a new TimerCollection with the microtime option. All timers within this collection will use the measuring option the collection was inititialized with.
+``` php
+use DavidBehler\Timer\TimerCollection;
+
+$timerCollection = new TimerCollection('microtime');
+```
+
+Start a time and get it's duration in seconds
+``` php
+$timerCollection->start('timer 1');
+
+$timerCollection->getDuration('timer 1', true);
+```
+
+Start multiple timers at once and get their durations
+``` php
+$timerCollection->start('timer 1');
+$timerCollection->start('timer 2');
+
+$timerCollection->getDuration('timer 1');
+$timerCollection->getDuration('timer 2');
+// or
+$timerCollection->start(array('timer 1', 'timer 2'));
+$timerCollcetion->getDuration(array('timer 1', 'timer 2')); // returns an array of durations with timer labels as indeces
+```
+
+You can also stop, pause and restart multiple timers at once
+``` php
+$timerCollection->stop(array('timer 1', 'timer 2'));
+$timerCollection->pause(array('timer 1', 'timer 2'));
+$timerCollection->restart(array('timer 1', 'timer 2'));
+```
+
+You can get a list of all timers
+``` php
+$timerCollection->getTimers(); // returns an array with all setup timers
+$timerCollection->getTimers(true); // returns an array with all the setup timers' labels
 ```

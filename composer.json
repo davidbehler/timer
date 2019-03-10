@@ -1,15 +1,21 @@
 {
 	"name": "davidbehler/timer",
-	"description": "A timer, in PHP. You can (re)start, pause and stop. And get the passed time.",
-	"keywords": ["time", "timer"],
+	"description": "A timer, in PHP. You can (re)start, pause and stop. And get the passed time. You can start/control multiple timers simultaneously by label.",
+	"keywords": ["time", "timer", "timers", "stopwatch", "performance", "benchmark", "statistics", "duration"],
+	"type": "library",
+	"homepage": "https://github.com/davidbehler/timer/",
 	"license": "MIT",
 	"authors": [
 		{
 			"name": "David Behler",
 			"email": "d.behler@gmail.com",
-			"role": "Developer"
+			"role": "Creator"
 		}
 	],
+	"support": {
+		"issues": "https://github.com/davidbehler/timer/issues",
+		"source": "https://github.com/davidbehler/timer"
+	},
 	"autoload": {
 		"psr-4": {
 			"DavidBehler\\Timer\\": "src/DavidBehler/Timer"
