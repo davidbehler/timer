@@ -1,8 +1,8 @@
 <?php
 	namespace DavidBehler\Timer;
 
-	use DavidBehler\Timer\TimerInterval;
-	use DavidBehler\Timer\TimerIntervalMicrotime;
+	use DavidBehler\Timer\TimerInterval\DateTime as TimerIntervalDateTime;
+	use DavidBehler\Timer\TimerInterval\Microtime as TimerIntervalMicrotime;
 	use DavidBehler\Timer\TimerException;
 
 	class Timer
@@ -31,7 +31,7 @@
 
 				switch($this->intervalType) {
 					case 'datetime':
-						$this->intervals[] = new TimerInterval;
+						$this->intervals[] = new TimerIntervalDateTime;
 					break;
 					case 'microtime':
 						$this->intervals[] = new TimerIntervalMicrotime;
@@ -87,13 +87,25 @@
 			$duration = 0;
 
 			foreach($this->intervals as $interval) {
-				$duration += $interval->getDuration();
+				$duration += $interval->getDuration($getSeconds, $precision);
 			}
 
-			if($getSeconds) {
-				return round($duration / 1000, $precision);
-			} else {
-				return $duration;
+			return $duration;
+		}
+
+		public function getReport($getSeconds = false, $precision = 3)
+		{
+			$report = array(
+				'duration' => $this->getDuration($getSeconds, $precision),
+				'status' => $this->status,
+				'intervalType' => $this->intervalType,
+				'intervals' => array()
+			);
+
+			foreach($this->intervals as $interval) {
+				$report['intervals'][] = $interval->getReport($getSeconds, $precision);
 			}
+
+			return $report;
 		}
 	}

@@ -111,6 +111,31 @@
 			}
 		}
 
+		public function getReport($labels = null, $getSeconds = false, $precision = 3)
+		{
+			if(!$labels) {
+				$labels = array_keys($this->timers);
+			}
+
+			if(count($labels) == 1) {
+				$label = reset($labels);
+
+				if($this->timerExists($label)) {
+					return $this->timers[$label]->getReport($getSeconds, $precision);
+				}
+			} else {
+				$report = array(
+					'timers' => array()
+				);
+
+				foreach($this->timers as $label => $timer) {
+					$report['timers'][$label] = $timer->getReport();
+				}
+			}
+
+			return $report;
+		}
+
 		public function getTimers($labelsOnly = false)
 		{
 			if($labelsOnly) {
