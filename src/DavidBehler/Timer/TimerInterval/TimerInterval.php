@@ -20,9 +20,8 @@
 		public function stop(): TimerInterval;
 
 		/**
-		 * Get the duration of the time interval. Use current time if no end time set
+		 * Get the duration of the time interval in seconds. Use current time if no end time set
 		 *
-		 * @param bool 	$getSeconds Whether to get seconds with microseconds after the decimal point
 		 * @param int 	$precision 	The precision of the returned duration
 		 *
 		 * @return int
@@ -32,7 +31,6 @@
 		/**
 		 * Get an array with detailed data for this interval
 		 *
-		 * @param bool 	$getSeconds Whether to get seconds with microseconds after the decimal point
 		 * @param int 	$precision 	The precision of the returned duration
 		 *
 		 * @return array
