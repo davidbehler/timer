@@ -9,9 +9,9 @@
 	class TimerCollection
 	{
 		private $timers = [];
-		private $intervalType = 'datetime';
+		private $intervalType = Timer::DATETIME_TYPE;
 
-		public function __construct(string $intervalType = 'datetime')
+		public function __construct(string $intervalType = Timer::DATETIME_TYPE)
 		{
 			$this->intervalType = $intervalType;
 		}

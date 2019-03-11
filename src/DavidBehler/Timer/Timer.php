@@ -9,14 +9,16 @@
 
 	class Timer
 	{
+		const MICROTIME_TYPE = 'microtime';
+		const DATETIME_TYPE = 'datetime';
+
 		private $intervals = array();
 		private $status = 'stopped';
-		private $intervalType = 'datetime';
-		private $validIntervalTypes = array('datetime', 'microtime');
+		private $intervalType = Timer::DATETIME_TYPE;
 
-		public function __construct(bool $autostart = true, string $intervalType = 'datetime')
+		public function __construct(bool $autostart = true, string $intervalType = Timer::DATETIME_TYPE)
 		{
-			if(!in_array($intervalType, $this->validIntervalTypes)) {
+			if(!in_array($intervalType, array(Timer::DATETIME_TYPE, Timer::MICROTIME_TYPE))) {
 				throw new TimerException('Unknown timer interval type: '.$intervalType);
 			}
 
@@ -38,10 +40,10 @@
 			}
 
 			switch($this->intervalType) {
-				case 'datetime':
+				case Timer::DATETIME_TYPE:
 					$this->intervals[] = new TimerIntervalDateTime;
 				break;
-				case 'microtime':
+				case Timer::MICROTIME_TYPE:
 					$this->intervals[] = new TimerIntervalMicrotime;
 				break;
 			}
