@@ -1,4 +1,6 @@
 <?php
+	declare(strict_types = 1);
+
 	namespace DavidBehler\Timer\TimerInterval;
 
 	/**
@@ -10,12 +12,12 @@
 		/**
 		 * Start the time interval
 		 */
-		public function start();
+		public function start(): TimerInterval;
 
 		/**
 		 * Stop the time interval
 		 */
-		public function stop();
+		public function stop(): TimerInterval;
 
 		/**
 		 * Get the duration of the time interval. Use current time if no end time set
@@ -25,7 +27,7 @@
 		 *
 		 * @return int
 		 */
-		public function getDuration($getSeconds = false, $precision = 3);
+		public function getDuration(int $precision = 6): float;
 
 		/**
 		 * Get an array with detailed data for this interval
@@ -35,21 +37,5 @@
 		 *
 		 * @return array
 		 */
-		public function getReport($getSeconds = false, $precision = 3);
-
-		/**
-		 * Get the current time
-		 */
-		public function getTime();
-
-		/**
-		 * Format the duration
-		 *
-		 * @param int 	$microseconds
-		 * @param bool 	$getSeconds Whether to get seconds with microseconds after the decimal point
-		 * @param int 	$precision 	The precision of the returned duration
-		 *
-		 * @return int
-		 */
-		public function formatDuration($microseconds, $getSeconds = false, $precision = 3);
+		public function getReport(int $precision = 6): array;
 	}

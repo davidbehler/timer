@@ -1,4 +1,6 @@
 <?php
+	declare(strict_types = 1);
+
 	namespace DavidBehler\Timer\TimerInterval;
 
 	use DavidBehler\Timer\TimerInterval\TimerInterval;
@@ -9,49 +11,51 @@
 		private $start;
 		private $end;
 
-		public function __construct($autostart = true)
+		public function __construct(bool $autostart = true)
 		{
 			if($autostart) {
 				$this->start();
 			}
 		}
 
-		public function start()
+		public function start(): TimerInterval
 		{
 			$this->start = $this->getTime();
+
+			return $this;
 		}
 
-		public function stop()
+		public function stop(): TimerInterval
 		{
-			if($this->start) {
-				$this->end = $this->getTime();
-			} else {
+			if(!$this->start) {
 				throw new TimerIntervalException('Interval was not started');
 			}
+
+			$this->end = $this->getTime();
+
+			return $this;
 		}
 
-		public function getDuration($getSeconds = false, $precision = 3)
+		public function getDuration(int $precision = 6): float
 		{
-			if($this->start) {
-				if($this->end) {
-					$compare = $this->end;
-				} else {
-					$compare = $this->getTime();
-				}
-
-				$interval = $this->start->diff($compare);
-
-				$seconds = $compare->getTimestamp() - $this->start->getTimestamp();
-
-				$microseconds = $seconds * 1000 + $interval->format('%f');
-
-				return $this->formatDuration($microseconds, $getSeconds, $precision);
-			} else {
+			if(!$this->start) {
 				throw new TimerIntervalException('Interval was not started');
 			}
+
+			if($this->end) {
+				$compare = $this->end;
+			} else {
+				$compare = $this->getTime();
+			}
+
+			$interval = $this->start->diff($compare);
+
+			$seconds = $compare->getTimestamp() - $this->start->getTimestamp();
+
+			return round($seconds + (int) $interval->format('%f') / 1000 / 1000, $precision);
 		}
 
-		public function getReport($getSeconds = false, $precision = 3)
+		public function getReport(int $precision = 6): array
 		{
 			$report = array(
 				'start' => $this->start->format('Y-m-d H:i:s.u'),
@@ -66,19 +70,8 @@
 			return $report;
 		}
 
-		public function getTime()
+		public function getTime(): \DateTimeImmutable
 		{
 			return new \DateTimeImmutable;
-		}
-
-		public function formatDuration($microseconds, $getSeconds = false, $precision = 3)
-		{
-			if($getSeconds) {
-				$duration = $microseconds / 1000;
-			} else {
-				$duration = $microseconds;
-			}
-
-			return round($microseconds, $precision);
 		}
 	}

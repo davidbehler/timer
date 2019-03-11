@@ -1,4 +1,6 @@
 <?php
+	declare(strict_types = 1);
+
 	namespace DavidBehler\Timer;
 
 	use DavidBehler\Timer\TimerInterval\DateTime as TimerIntervalDateTime;
@@ -10,9 +12,14 @@
 		private $intervals = array();
 		private $status = 'stopped';
 		private $intervalType = 'datetime';
+		private $validIntervalTypes = array('datetime', 'microtime');
 
-		public function __construct($autostart = true, $intervalType = 'datetime')
+		public function __construct(bool $autostart = true, string $intervalType = 'datetime')
 		{
+			if(!in_array($intervalType, $this->validIntervalTypes)) {
+				throw new TimerException('Unknown timer interval type: '.$intervalType);
+			}
+
 			$this->intervalType = $intervalType;
 
 			if($autostart) {
@@ -20,90 +27,87 @@
 			}
 		}
 
-		public function start()
+		public function start(): Timer
 		{
 			if($this->status == 'running') {
 				throw new TimerException('Timer is already running');
-			} else {
-				if($this->status == 'stopped') {
-					$this->intervals = array();
-				}
-
-				switch($this->intervalType) {
-					case 'datetime':
-						$this->intervals[] = new TimerIntervalDateTime;
-					break;
-					case 'microtime':
-						$this->intervals[] = new TimerIntervalMicrotime;
-					break;
-					default:
-						throw new TimerException('Unknown timer interval type: '.$this->intervalType);
-					break;
-				}
-
-				$this->status = 'running';
 			}
+
+			if($this->status == 'stopped') {
+				$this->intervals = array();
+			}
+
+			switch($this->intervalType) {
+				case 'datetime':
+					$this->intervals[] = new TimerIntervalDateTime;
+				break;
+				case 'microtime':
+					$this->intervals[] = new TimerIntervalMicrotime;
+				break;
+			}
+
+			$this->status = 'running';
 
 			return $this;
 		}
 
-		public function stop()
+		public function stop(): Timer
 		{
 			if($this->status == 'stopped') {
 				throw new TimerException('Timer is not running');
-			} else {
-				$this->intervals[count($this->intervals) - 1]->stop();
-
-				$this->status = 'stopped';
 			}
+
+			$this->intervals[count($this->intervals) - 1]->stop();
+
+			$this->status = 'stopped';
 
 			return $this;
 		}
 
-		public function pause()
+		public function pause(): Timer
 		{
-			if($this->status == 'running') {
-				$this->intervals[count($this->intervals) - 1]->stop();
-
-				$this->status = 'paused';
-			} else {
+			if($this->status != 'running') {
 				throw new TimerException('Timer is not running');
 			}
 
+			$this->intervals[count($this->intervals) - 1]->stop();
+
+			$this->status = 'paused';
+
 			return $this;
 		}
 
-		public function restart()
+		public function restart(): Timer
 		{
 			$this->intervals = array();
 
 			$this->status = 'stopped';
 
-			$this->start();
+			return $this->start();
 		}
 
-		public function getDuration($getSeconds = false, $precision = 3)
+		public function getDuration(int $precision = 6): float
 		{
 			$duration = 0;
 
 			foreach($this->intervals as $interval) {
-				$duration += $interval->getDuration($getSeconds, $precision);
+				$duration += $interval->getDuration($precision);
 			}
 
 			return $duration;
 		}
 
-		public function getReport($getSeconds = false, $precision = 3)
+		public function getReport(int $precision = 6): array
 		{
 			$report = array(
-				'duration' => $this->getDuration($getSeconds, $precision),
+				'duration' => $this->getDuration($precision),
 				'status' => $this->status,
 				'intervalType' => $this->intervalType,
 				'intervals' => array()
 			);
 
 			foreach($this->intervals as $interval) {
-				$report['intervals'][] = $interval->getReport($getSeconds, $precision);
+				$report['intervals'][] = $interval->getReport($precision);
 			}
 
 			return $report;
