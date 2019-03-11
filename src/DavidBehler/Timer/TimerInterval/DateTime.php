@@ -68,7 +68,7 @@
 
 		public function getTime()
 		{
-			return new \DateTime;
+			return new \DateTimeImmutable;
 		}
 
 		public function formatDuration($microseconds, $getSeconds = false, $precision = 3)
