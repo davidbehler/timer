@@ -3,8 +3,8 @@ A timer, in PHP. You can (re)start, pause and stop. And get the passed time. Wit
 
 Currently supported time measuring options:
 
-* dateime: uses PHP's DateTime class (this is the default)
-* microtime: uses PHP's microtime function
+* Timer::DATETIME_TYPE: uses PHP's DateTime class (this is the default)
+* Timer::MICROTIME_TYPE: uses PHP's microtime function
 
 ## Installation
 
@@ -29,7 +29,7 @@ $timer = new Timer;
 
 Create a new timer with autostart and microtime option
 ``` php
-$timer = new Timer(true, 'microtime');
+$timer = new Timer(true, Timer::MICROTIME_TYPE);
 ```
 
 Create a new timer without autostart
@@ -79,7 +79,7 @@ $timer = new Timer;
 
 usleep(1000);
 
-$timer->getDuration(); // returns 1000 (in a perfect world, but of course timings aren't this perfect)
+$timer->getDuration(); // returns 0.001 (in a perfect world, but of course timings aren't this perfect)
 ```
 
 Get duration of running timer in seconds with 4 digits after decimal point (uses current time)
@@ -88,7 +88,7 @@ $timer = new Timer;
 
 usleep(555);
 
-$timer->getDuration(true, 3); // returns 0.555 (in a perfect world, but of course timings aren't this perfect)
+$timer->getDuration(true, 5); // returns 0.00055 (in a perfect world, but of course timings aren't this perfect)
 ```
 
 Get duration of paused timer in seconds
@@ -101,7 +101,7 @@ $timer->pause();
 
 usleep(500);
 
-$timer->getDuration(true); // returns 0.5 (in a perfect world, but of course timings aren't this perfect)
+$timer->getDuration(); // returns 0.0005 (in a perfect world, but of course timings aren't this perfect)
 ```
 
 Get duration of stopped timer in seconds
@@ -114,14 +114,14 @@ $timer->stop();
 
 usleep(500);
 
-$timer->getDuration(true); // returns 0.5 (in a perfect world, but of course timings aren't this perfect)
+$timer->getDuration(); // returns 0.0005 (in a perfect world, but of course timings aren't this perfect)
 ```
 
 Get duration of timer paused/started multiple times in seconds
 ``` php
 $timer = new Timer;
 
-usleep(500);
+sleep(1);
 
 $timer->pause();
 
@@ -129,19 +129,11 @@ usleep(500);
 
 $timer->start();
 
-usleep(200);
+sleep(2);
 
 $timer->pause();
 
-usleep(2000);
-
-$timer->start();
-
-usleep(1000);
-
-$timer->stop();
-
-$timer->getDuration(true); // returns 1.7 (in a perfect world, but of course timings aren't this perfect)
+$timer->getDuration(); // returns 3.005 (in a perfect world, but of course timings aren't this perfect)
 ```
 
 Get a report
@@ -154,14 +146,14 @@ Create a new TimerCollection with the microtime option. All timers within this c
 ``` php
 use DavidBehler\Timer\TimerCollection;
 
-$timerCollection = new TimerCollection('microtime');
+$timerCollection = new TimerCollection(Timer::MICROTIME_TYPE);
 ```
 
 Start a time and get it's duration in seconds
 ``` php
 $timerCollection->start('timer 1');
 
-$timerCollection->getDuration('timer 1', true);
+$timerCollection->getDuration('timer 1');
 ```
 
 Start multiple timers at once and get their durations
@@ -173,7 +165,7 @@ $timerCollection->getDuration('timer 1');
 $timerCollection->getDuration('timer 2');
 // or
 $timerCollection->start(array('timer 1', 'timer 2'));
-$timerCollcetion->getDuration(array('timer 1', 'timer 2')); // returns an array of durations with timer labels as indeces
+$timerCollcetion->getDurations(array('timer 1', 'timer 2')); // returns an array of durations with timer labels as indeces
 ```
 
 You can also stop, pause and restart multiple timers at once
@@ -196,5 +188,5 @@ $timerCollection->getReport('timer 4');
 
 Get a report for multiple timers
 ``` php
-$timerCollection->getReport(array('timer 5', 'timer 6'));
+$timerCollection->getReports(array('timer 5', 'timer 6'));
 ```
